@@ -39,7 +39,7 @@ class NewLineProp(bpy.types.PropertyGroup):
 ###########################################################################################
 
 class DSC_TIME_CONVERTER_OT_clear_lines(bpy.types.Operator):
-	bl_idname = 'DSC_TIME_CONVERTER_OT_clear_lines'
+	bl_idname = 'dsc_time_converter.clear_lines_button'
 	bl_label = 'Clear'
 	bl_description = 'Deletes all the added lines.'
 
@@ -50,7 +50,7 @@ class DSC_TIME_CONVERTER_OT_clear_lines(bpy.types.Operator):
 ###########################################################################################
 
 class DSC_TIME_CONVERTER_OT_add_line(bpy.types.Operator):
-	bl_idname = 'DSC_TIME_CONVERTER_OT_add_line'
+	bl_idname = 'dsc_time_converter.add_line_button'
 	bl_label = 'New Line'
 	bl_description = 'Adds a new line to export alongside the marker time'
 
@@ -62,7 +62,7 @@ class DSC_TIME_CONVERTER_OT_add_line(bpy.types.Operator):
 ###########################################################################################
 
 class DSC_TIME_CONVERTER_OT_delete_line(bpy.types.Operator):
-	bl_idname = 'DSC_TIME_CONVERTER_OT_delete_line'
+	bl_idname = 'dsc_time_converter.delete_line_button'
 	bl_label = ''
 	bl_description = 'Deletes a line property that is bounded with this operator. The ' + \
 		'deleted line will no longer be added to the clipboard.'
@@ -77,7 +77,7 @@ class DSC_TIME_CONVERTER_OT_delete_line(bpy.types.Operator):
 ###########################################################################################
 
 class DSC_TIME_CONVERTER_OT_copy_current_frame(bpy.types.Operator):
-	bl_idname = 'DSC_TIME_CONVERTER_OT_copy_current_frame'
+	bl_idname = 'dsc_time_converter.copy_current_frame_button'
 	bl_label = 'Copy Current DSC Time'
 	bl_description = 'Copies the DSC time of the current frame to the clipboard. The generated ' + \
 		'text comes like this:\n' + 'TIME({dsc_time});\n' + \
@@ -96,7 +96,7 @@ class DSC_TIME_CONVERTER_OT_copy_current_frame(bpy.types.Operator):
 ###########################################################################################
 
 class DSC_TIME_CONVERTER_OT_copy_all_markers(bpy.types.Operator):
-	bl_idname = 'DSC_TIME_CONVERTER_OT_copy_all_markers'
+	bl_idname = 'dsc_time_converter.copy_all_markers_button'
 	bl_label = 'Copy All Markers DSC Time'
 	bl_description = 'Converts all timeline markers to DSC Time and copies them to the clipboard.' + \
 		'Every marker is bound to have the same default text, as stated in the operator above.'
@@ -121,7 +121,7 @@ class DSC_TIME_CONVERTER_OT_copy_all_markers(bpy.types.Operator):
 ###########################################################################################
 	
 class DSC_TIME_CONVERTER_PT_main(bpy.types.Panel):
-	bl_idname = 'DSC_TIME_CONVERTER_PT_main'
+	bl_idname = 'dsc_time_converter.main_panel'
 	bl_label = 'DSC Time Converter'
 	bl_space_type = 'DOPESHEET_EDITOR'
 	bl_region_type = 'UI'
@@ -135,7 +135,7 @@ class DSC_TIME_CONVERTER_PT_main(bpy.types.Panel):
 ###########################################################################################
 		
 class DSC_TIME_CONVERTER_PT_sub_1(bpy.types.Panel):
-	bl_idname = 'DSC_TIME_CONVERTER_PT_sub_1'
+	bl_idname = 'dsc_time_converter.subpanel_1'
 	bl_label = 'Extra Text'
 	bl_space_type = 'DOPESHEET_EDITOR'
 	bl_region_type = 'UI'
@@ -160,7 +160,7 @@ class DSC_TIME_CONVERTER_PT_sub_1(bpy.types.Panel):
 ###########################################################################################
 		
 class DSC_TIME_CONVERTER_PT_sub_2(bpy.types.Panel):
-	bl_idname = 'DSC_TIME_CONVERTER_PT_sub_2'
+	bl_idname = 'dsc_time_converter.subpanel_2'
 	bl_label = 'Export'
 	bl_space_type = 'DOPESHEET_EDITOR'
 	bl_region_type = 'UI'
