@@ -13,6 +13,9 @@ bl_info = {
 import bpy
 from bpy.props import StringProperty, IntProperty
 
+#! ADD BUTTONS TO DELETE ONE LINE
+#! ADD SOME SECTION TITLES
+#! ADD INFO ABOUT THE DEFAULT TEXT
 
 def frame_to_dsctime(frame, fps=60):
 	seconds = frame / fps
