@@ -24,18 +24,35 @@ def stringify_marker(custom_time, i=1):
 		f"CHANGE_FIELD({i});\n" + \
 		"MOVIE_DISP(1);\n" + \
 		"MOVIE_PLAY(1);\n" + \
-		"DATA_CAMERA(0, 1);\n" + \
-		"SET_MOTION(0, 1, -1, 1000);\n" + \
-		"SET_MOTION(1, 1, -1, 1000);\n" + \
-		"SET_MOTION(2, 1, -1, 1000);\n"
+		"DATA_CAMERA(0, 1);\n"
+
 
 ###########################################################################################
 
-class MyProperties(bpy.types.PropertyGroup):
-	prefix: StringProperty()
-	suffix: StringProperty()
+class NewLineItem(bpy.types.PropertyGroup):
+	value: StringProperty()
 
+###########################################################################################
 
+class ClearLinesOperator(bpy.types.Operator):
+	bl_idname = "dsc_marker_exporter.clear_lines"
+	bl_label = "Deletes all added lines"
+
+	def execute(self, context):
+		context.scene.lines.clear()
+		return {'FINISHED'}
+
+###########################################################################################
+
+class AddNewLineOperator(bpy.types.Operator):
+	bl_idname = "dsc_marker_exporter.add_new_line"
+	bl_label = "Adds a new line to export alongside the marker time"
+
+	def execute(self, context):
+		lines = context.scene.lines
+		new_line = lines.add()
+		return {'FINISHED'}
+		
 ###########################################################################################
 
 class CopyOneMarkerOperator(bpy.types.Operator):
@@ -58,15 +75,20 @@ class CopyAllMarkersOperator(bpy.types.Operator):
 	fps: IntProperty()
 
 	def execute(self, context):
+		lines = context.scene.lines
 		all_markers_time = ""
+		all_lines = ''.join([f"{line.value}\n" for line in lines])
+
+		print(all_lines)
 
 		sorted_frames = sorted(map(lambda marker: marker.frame, bpy.context.scene.timeline_markers))
 		for i, frame in enumerate(sorted_frames):
 			dsc_time = frame_to_dsctime(frame, fps=self.fps)
-			all_markers_time += stringify_marker(dsc_time, i + 1)
+			all_markers_time += stringify_marker(dsc_time, i + 1) + all_lines
 
 		context.window_manager.clipboard = all_markers_time
 		self.report({'INFO'}, "Copied all markers to the clipboard!")
+
 		return {'FINISHED'}
 	
 ###########################################################################################
@@ -76,37 +98,59 @@ class AddonMainPanel(bpy.types.Panel):
 	bl_label = "DSC Marker Export"
 	bl_space_type = 'DOPESHEET_EDITOR'
 	bl_region_type = 'UI'
+	bl_options = {'DEFAULT_CLOSED'}
+
+	def calculate(self, scene):
+		self.fps = int(scene.render.fps / scene.render.fps_base)
+		if self.fps != 60:
+			self.layout.label(text="Warning: Scene FPS is not set to 60", icon='ERROR')
+		self.dsc_current = frame_to_dsctime(scene.frame_current, fps=self.fps)
+
+	def draw_info(self, scene):
+		self.layout.label(text=f"Current Frame: {scene.frame_current}")
+		self.layout.label(text=f"Current Frame DSC Time: {self.dsc_current}")
+
+	def draw_buttons_area(self, lines):
+		all_lines = ''.join([f"{line.value}\n" for line in lines])
+
+		copy_one_button = self.layout.operator(CopyOneMarkerOperator.bl_idname, text="Copy DSC Time to Clipboard")
+		copy_one_button.dsc_time = stringify_marker(self.dsc_current) + all_lines
+
+		copy_all_button = self.layout.operator(CopyAllMarkersOperator.bl_idname, text="Copy all markers to Clipboard")
+		copy_all_button.fps = self.fps
 
 	def draw(self, context):
-		layout = self.layout
 		scene = context.scene
-		addon_props = scene.addon_props
+		lines = scene.lines
 
-		layout.prop(addon_props, "prefix")
-
-		# Check the scene's frame rate
-		fps = int(scene.render.fps / scene.render.fps_base)
-		if fps != 60:
-			layout.label(text="Warning: Scene FPS is not set to 60", icon='ERROR')
-
-		# Display the custom time for the current frame
-		current_frame = scene.frame_current
-		custom_time = frame_to_dsctime(current_frame, fps=fps)
-
-		# Use a label to display the custom time
-		layout.label(text=f"DSC Time: {custom_time}")
-
-		# Add a button to copy the custom time to the clipboard
-		copy_one_button = layout.operator(CopyOneMarkerOperator.bl_idname, text="Copy DSC Time to Clipboard")
-		# copy_one_button.dsc_time = stringify_marker(custom_time)
-		copy_one_button.dsc_time = addon_props.prefix
-
-		copy_all_button = layout.operator(CopyAllMarkersOperator.bl_idname, text="Copy all markers to Clipboard")
-		copy_all_button.fps = fps
+		self.calculate(scene)
+		self.draw_info(scene)
+		self.draw_buttons_area(lines)
 		
 ###########################################################################################
+		
+class AddonSecondPanel(bpy.types.Panel):
+	bl_idname = "dsc_marker_exporter.addon_second_panel"
+	bl_label = "Advanced"
+	bl_space_type = 'DOPESHEET_EDITOR'
+	bl_region_type = 'UI'
+	bl_options = {'DEFAULT_CLOSED'}
+	bl_parent_id = 'dsc_marker_exporter.addon_main_panel'
 
-classes = [MyProperties, CopyAllMarkersOperator, CopyOneMarkerOperator, AddonMainPanel]
+	def draw(self, context):
+		scene = context.scene
+		lines = scene.lines
+
+		for line in lines:
+			self.layout.prop(line, "value")
+		row = self.layout.row()
+		row.operator(AddNewLineOperator.bl_idname, text="New line")
+		row.operator(ClearLinesOperator.bl_idname, text="Clear")
+
+###########################################################################################
+
+classes = [NewLineItem, AddNewLineOperator, ClearLinesOperator, \
+		CopyAllMarkersOperator, CopyOneMarkerOperator, AddonMainPanel, AddonSecondPanel]
 
 def update_panel(scene, context):
 	pass
@@ -116,7 +160,7 @@ def register():
 		bpy.utils.register_class(temp)
 	
 	bpy.app.handlers.frame_change_post.append(update_panel)
-	bpy.types.Scene.addon_props = bpy.props.PointerProperty(type=MyProperties)
+	bpy.types.Scene.lines = bpy.props.CollectionProperty(type=NewLineItem)
 
 def unregister():
 	for temp in classes:
@@ -124,7 +168,7 @@ def unregister():
 	
 	if update_panel in bpy.app.handlers.frame_change_post:
 		bpy.app.handlers.frame_change_post.remove(update_panel)
-	del bpy.types.Scene.addon_props
+	del bpy.types.Scene.lines
 
 if __name__ == "__main__":
 	register()
