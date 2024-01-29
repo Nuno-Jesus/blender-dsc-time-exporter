@@ -4,7 +4,8 @@ bl_info = {
 	'version': (1, 0, 0),
 	'blender': (4, 0, 2),
 	'location': 'Dope Sheet',
-	'description': '',
+	'description': """Converts timeline frames to DSC time to export to the clipboard. Note: each DSC time comes 
+wrapped in a default text, which can only be changed by changing the source code of this addon.""",
 	'warning': '',
 	'wiki_url': '',
 	'category': 'Animation',
@@ -12,6 +13,9 @@ bl_info = {
 
 import bpy
 from bpy.props import StringProperty, IntProperty
+from bpy.types import Operator, PropertyGroup, Panel
+
+########################################### UTILS ###########################################
 
 def frame_to_dsctime(frame, fps=60):
 	seconds = frame / fps
@@ -34,12 +38,12 @@ def calculate(scene):
 
 ###########################################################################################
 
-class NewLineProp(bpy.types.PropertyGroup):
+class NewLineProp(PropertyGroup):
 	value: StringProperty()
 
 ###########################################################################################
 
-class DSC_TIME_CONVERTER_OT_clear_lines(bpy.types.Operator):
+class DSC_TIME_CONVERTER_OT_clear_lines(Operator):
 	bl_idname = 'dsc_time_converter.clear_lines_button'
 	bl_label = 'Clear'
 	bl_description = 'Deletes all the added lines'
@@ -50,7 +54,7 @@ class DSC_TIME_CONVERTER_OT_clear_lines(bpy.types.Operator):
 
 ###########################################################################################
 
-class DSC_TIME_CONVERTER_OT_add_line(bpy.types.Operator):
+class DSC_TIME_CONVERTER_OT_add_line(Operator):
 	bl_idname = 'dsc_time_converter.add_line_button'
 	bl_label = 'New Line'
 	bl_description = 'Adds a new line to export alongside the marker time'
@@ -62,22 +66,22 @@ class DSC_TIME_CONVERTER_OT_add_line(bpy.types.Operator):
 
 ###########################################################################################
 
-class DSC_TIME_CONVERTER_OT_delete_line(bpy.types.Operator):
+class DSC_TIME_CONVERTER_OT_delete_line(Operator):
 	bl_idname = 'dsc_time_converter.delete_line_button'
 	bl_label = ''
 	bl_description = 'Deletes a line property that is bounded with this operator. The ' + \
 		'deleted line will no longer be added to the clipboard'
 
-	i: IntProperty()
+	index: IntProperty()
 
 	def execute(self, context):
 		lines = context.scene.lines
-		lines.remove(self.i)
+		lines.remove(self.index)
 		return {'FINISHED'}
 		
 ###########################################################################################
 
-class DSC_TIME_CONVERTER_OT_copy_current_frame(bpy.types.Operator):
+class DSC_TIME_CONVERTER_OT_copy_current_frame(Operator):
 	bl_idname = 'dsc_time_converter.copy_current_frame_button'
 	bl_label = 'Copy Current DSC Time'
 	bl_description = 'Copies the DSC time of the current frame to the clipboard. The generated ' + \
@@ -87,16 +91,16 @@ class DSC_TIME_CONVERTER_OT_copy_current_frame(bpy.types.Operator):
 		'MOVIE_PLAY(1);\n' + \
 		'DATA_CAMERA(0, 1);\n'
 	
-	dsc_time: StringProperty()
+	text_to_copy: StringProperty()
 
 	def execute(self, context):
-		context.window_manager.clipboard = self.dsc_time
+		context.window_manager.clipboard = self.text_to_copy
 		self.report({'INFO'}, 'Copied the selected marker to the clipboard!')
 		return {'FINISHED'}
 	
 ###########################################################################################
 
-class DSC_TIME_CONVERTER_OT_copy_all_markers(bpy.types.Operator):
+class DSC_TIME_CONVERTER_OT_copy_all_markers(Operator):
 	bl_idname = 'dsc_time_converter.copy_all_markers_button'
 	bl_label = 'Copy All Markers DSC Time'
 	bl_description = 'Converts all timeline markers to DSC Time and copies them to the clipboard.'
@@ -105,22 +109,22 @@ class DSC_TIME_CONVERTER_OT_copy_all_markers(bpy.types.Operator):
 
 	def execute(self, context):
 		lines = context.scene.lines
-		all_new_lines = ''.join([f'{line.value}\n' for line in lines])
-		buffer = ''
+		extra_lines = ''.join([f'{line.value}\n' for line in lines])
+		text_to_copy = ''
 
 		sorted_frames = sorted(map(lambda marker: marker.frame, bpy.context.scene.timeline_markers))
 		for i, frame in enumerate(sorted_frames):
 			dsc_time = frame_to_dsctime(frame, fps=self.fps)
-			buffer += stringify_marker(dsc_time, i + 1) + all_new_lines
+			text_to_copy += stringify_marker(dsc_time, i + 1) + extra_lines
 
-		context.window_manager.clipboard = buffer
+		context.window_manager.clipboard = text_to_copy
 		self.report({'INFO'}, 'Copied all markers to the clipboard!')
 
 		return {'FINISHED'}
 	
 ###########################################################################################
 	
-class DSC_TIME_CONVERTER_PT_main(bpy.types.Panel):
+class DSC_TIME_CONVERTER_PT_main(Panel):
 	bl_idname = 'dsc_time_converter.main_panel'
 	bl_label = 'DSC Time Converter'
 	bl_space_type = 'DOPESHEET_EDITOR'
@@ -129,16 +133,16 @@ class DSC_TIME_CONVERTER_PT_main(bpy.types.Panel):
 	def draw(self, context):
 		scene = context.scene
 
-		self.fps, self.dsc_current = calculate(scene)
+		_, self.dsc_current = calculate(scene)
 		self.layout.label(text=f'Current DSC Time: {self.dsc_current}')
 		
 ###########################################################################################
 		
-class DSC_TIME_CONVERTER_PT_sub_1(bpy.types.Panel):
+class DSC_TIME_CONVERTER_PT_sub_1(Panel):
 	bl_idname = 'dsc_time_converter.subpanel_1'
 	bl_label = 'Extra Text'
-	bl_description = 'If you need, you can add more lines to be copied alongside the default' + \
-		'text. Every marker is bound to have the default text and the new lines you add to it'
+	bl_description = 'If you need, you can add more lines to be copied alongside the default ' + \
+		'text. Every frame is bound to have the default text and the new lines you add to it'
 	bl_space_type = 'DOPESHEET_EDITOR'
 	bl_region_type = 'UI'
 	bl_options = {'DEFAULT_CLOSED'}
@@ -157,11 +161,11 @@ class DSC_TIME_CONVERTER_PT_sub_1(bpy.types.Panel):
 			
 			split.prop(line, 'value')
 			button = split.operator(DSC_TIME_CONVERTER_OT_delete_line.bl_idname, icon='CANCEL')
-			button.i = i
+			button.index = i
 
 ###########################################################################################
 		
-class DSC_TIME_CONVERTER_PT_sub_2(bpy.types.Panel):
+class DSC_TIME_CONVERTER_PT_sub_2(Panel):
 	bl_idname = 'dsc_time_converter.subpanel_2'
 	bl_label = 'Export'
 	bl_description = 'Export your markers'
@@ -176,10 +180,10 @@ class DSC_TIME_CONVERTER_PT_sub_2(bpy.types.Panel):
 		all_new_lines = ''.join([f'{line.value}\n' for line in lines])
 
 		copy_marker_button = self.layout.operator(DSC_TIME_CONVERTER_OT_copy_current_frame.bl_idname, text='Copy Current DSC Time')
-		copy_marker_button.dsc_time = stringify_marker(self.dsc_current) + all_new_lines
+		copy_marker_button.text_to_copy = stringify_marker(self.dsc_current) + all_new_lines
 
 		copy_all_button = self.layout.operator(DSC_TIME_CONVERTER_OT_copy_all_markers.bl_idname, text='Copy All Markers DSC Time')
-		copy_all_button.fps = self.fps
+		copy_all_button.fps = int(self.fps)
 
 	def draw(self, context):
 		scene = context.scene
@@ -196,22 +200,16 @@ classes = [
 	DSC_TIME_CONVERTER_PT_sub_1, DSC_TIME_CONVERTER_PT_sub_2
 ]
 
-def update_panel(scene, context):
-	pass
-
 def register():
 	for cls in classes:
 		bpy.utils.register_class(cls)
 	
-	bpy.app.handlers.frame_change_post.append(update_panel)
 	bpy.types.Scene.lines = bpy.props.CollectionProperty(type=NewLineProp)
 
 def unregister():
 	for cls in classes:
 		bpy.utils.unregister_class(cls)
 	
-	if update_panel in bpy.app.handlers.frame_change_post:
-		bpy.app.handlers.frame_change_post.remove(update_panel)
 	del bpy.types.Scene.lines
 
 if __name__ == '__main__':
