@@ -4,8 +4,7 @@ bl_info = {
 	'version': (1, 0, 0),
 	'blender': (4, 0, 2),
 	'location': 'Dope Sheet',
-	'description': """Converts timeline frames to DSC time to export to the clipboard. Note: each DSC time comes 
-wrapped in a default text, which can only be changed by changing the source code of this addon.""",
+	'description': 'Converts timeline frames to DSC time to export to the clipboard.',
 	'warning': '',
 	'wiki_url': '',
 	'category': 'Animation',
