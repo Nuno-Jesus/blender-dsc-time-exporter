@@ -1,131 +1,54 @@
 # **DSC Time Exporter**
-A Blender 4.0.2 addon. Provides the ability to export Blender markers with Project Diva time.
+A Blender 4.0.2 add-on. Provides the ability to convert Blender markers aligned with [Project Diva](https://store.steampowered.com/app/1761390/Hatsune_Miku_Project_DIVA_Mega_Mix/) time.
 
-## 📝 **Authorship**
-
-- [Nuno Jesus](https://github.com/Nuno-Jesus)
+<!-- ## 📝 **Authorship** -->
 
 ## 📒 **About**
-Rendering a 3-dimensional image can be achieved using Ray Tracing, an expensive technique, which is based on casting rays from the camera into the space. If a ray intersects a shape, it illuminates it, based on both the shape's characteristics and also the environment around it as well.
-
-This isn't an advanced Ray Tracer, since it's implemented in C, but it definitely is functional and has a bit of our own bonus in it too!
-
-## **Mandatory Part**
-
-<table align=center>
-	<thead>
-		<tr>
-			<th colspan=2>Images</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td><image src="assets/mandatory_snowman.png"></td>
-			<td><image src="assets/mandatory_temple.png"></td>
-		</tr>
-		<tr>
-			<td><image src="assets/mandatory_stickman.png"></td>
-			<td><image src="assets/mandatory_losangle.png"></td>
-		</tr>
-	</tbody>
-</table>
-
-The mandatory part features:
-	
-	- Map file parser
-	- Ambient and diffuse lighting
-	- Display of planes, spheres and cylinders
-	- Shapes intersections
-	- Hard shadows
-	- Ray tracing (without recursive steps)
-
-## **Bonus Part**
-
-<table align=center>
-	<thead>
-		<tr>
-			<th colspan=2>Images</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td><image src="assets/bonus_colored_temple.png"></td>
-			<td><image src="assets/bonus_colored_snowman.png"></td>
-		</tr>
-		<tr>
-			<td><image src="assets/bonus_colored_multi_spot_lights.png"></td>
-			<td><image src="assets/bonus_texture.png"></td>
-		</tr>
-	</tbody>
-</table>
-
-The bonus part features the mandatory and also the following:
-
-	- Phong Illumination Model (ambient + diffuse + specular)
-	- Checkerboarded planes
-	- Multi-spot lights
-	- Colored light sources
-	- Multithreaded rendering (our bonus)
-	- Interectable menu (our bonus)
-
-## 🎥 **Demo**
-
-Here's a small demo with one of our maps.
-
-https://github.com/Nuno-Jesus/42_miniRT/assets/93390807/7ef7cc40-ab9f-4611-bdaf-18cd1a157213
+This repo houses a Blender add-on designed to help a friend of mine. The add-on automatically calculates the Project Diva time on a given frame. This time is used in some files to coordinate in-game animations, switch stages, add 2D/3D effects, etc. You can then export that time depending 
 
 ## 🚨 **Disclaimer**
-At 42, the C projects are built following a bunch of rules that enforce good coding style, stated in a file called **Norminette**. Some of them are:
+<!-- You're free  -->
 
-	- No for, do while, switch, case or goto are allowed
-	- No more than 25 lines per function and 5 functions per file
-	- No assigns and declarations in the same line (unless static)
-	- No more than 5 local functions in 1 function
-	- No more than 4 parameters in 1 function
-	... 
+## 🕹️ **Features**
+The current section will explain what the add-on is for. Carefully read through the next sections.
 
+- #### **Display the current DSC Time**
+Depending on the frame you're on, the main panel will display the current DSC time. This conversion is done, depending on the frame rate selected for the scene.
 
-## 📦 **Compilation**
-To compile the mandatory part of the ray tracer you should run `make`.
+<!-- GIF -->
 
-This rule will generate a `miniRT` file, which is the zipped version of all the object files. Running `make bonus` will compile the bonus part of the ray tracer. 
+- #### **Export the current DSC Time**
+The second subpanel has 2 buttons. Click on the `Copy Current DSC Time` button to copy the current frame DSC time.
 
-> **Note**
-> The rules `make fast` and `make bfast` take advantage of parallel compilation to build the mandatory and bonus part, respectively. 
+<!-- GIF -->
 
-To launch the executable you should follow this syntax...
+You'll notice the output is not quite what you expected. It comes with a lot of DSC commands, but the time is there. If don't feel like having all these commands when copying the time, you need to change the source code. More info [here](#👨🏻‍💻-changing-source-code)
 
-```sh
-$ ./miniRT scene_name
+- #### **Export all timeline markers DSC Time**
+Need to export several frames? Using timeline markers, you can select multiple frames. Then, click on `Copy All Markers DSC Time` button to export them all, sorted by ascending order of time.
+
+<!-- GIF -->
+
+## 👨🏻‍💻 **Changing Source Code**
+If you're not feeling comfortable with the add-on output, you can change it and it's not that hard! On the `dsc_time_exporter_main.py`, look for this function:
+
+```py
+def stringify_marker(dsc_time, i=1):
+	return f'TIME({dsc_time});\n' + \
+		f'CHANGE_FIELD({i});\n' + \
+		'MOVIE_DISP(1);\n' + \
+		'MOVIE_PLAY(1);\n' + \
+		'DATA_CAMERA(0, 1);\n'
 ```
 
-Where `scene_name` is the name of a file that represents the world map. The scene must have a `.rt` extension. You can find example scenes in the `scenes` folder.
+The `dsc_time` parameter is what you're looking for. Supposing you only want this, the new code should look like this:
 
-> **Warning**
-> On the macOS mlx version, the `mlx_destroy_display` function does not exist, which will cause a compilation error, unless you comment it (`world.c` and `world_bonus.c`)
+```py
+def stringify_marker(dsc_time, i=1):
+	return f'{dsc_time}\n'
+```
 
-## 🕹️ **Controls**
-
-Mandatory:
-- **W** - increments the camera y coordinate
-- **A** - decrements the camera x coordinate
-- **S** - decrements the camera y coordinate
-- **D** - increments the camera x coordinate
-
-Bonus:
-- **M** - toggles/untoggles the menu, which displays several other commands you can try
-
+Please, **keep the `\n` so line breaks are applied**!
 ## 📚 **Resources**
 
-- [Ray Tracing primitives and their intersections](https://hugi.scene.org/online/hugi24/coding%20graphics%20chris%20dragan%20raytracing%20shapes.htm)
-- [Ray Tracing books](https://raytracing.github.io)
-- [Ray Tracing and global illumination](https://digitalcommons.unf.edu/cgi/viewcontent.cgi?article=1100&context=ojii_volumes)
-- [Cornell University Ray Tracing slides](https://digitalcommons.unf.edu/cgi/viewcontent.cgi?article=1100&context=ojii_volumes)
-
-## 💫 **Testing**
-
-This project was tested using self-made tests.
-
-## 📞 **Contact me**
-
-Feel free to ask me any questions through Slack (**ncarvalh**).
+- [Blender API](https://docs.blender.org/api/current/index.html)
