@@ -1,30 +1,30 @@
 # **DSC Time Exporter**
-A Blender 4.0.2 add-on. Provides the ability to convert Blender markers aligned with [Project Diva](https://store.steampowered.com/app/1761390/Hatsune_Miku_Project_DIVA_Mega_Mix/) time.
+A Blender 4.0.2 add-on. Provides the ability to convert the Blender frames to [Project Diva](https://store.steampowered.com/app/1761390/Hatsune_Miku_Project_DIVA_Mega_Mix/) timestamps.
 
 <!-- ## 📝 **Authorship** -->
 
 ## 📒 **About**
 This repo houses a Blender add-on designed to help a friend of mine. The add-on automatically calculates the Project Diva time on a given frame. This time is used in some files to coordinate in-game animations, switch stages, add 2D/3D effects, etc. You can then export that time depending 
 
-## 🚨 **Disclaimer**
+<!-- ## 🚨 **Disclaimer** -->
 <!-- You're free  -->
 
 ## 🕹️ **Features**
 The current section will explain what the add-on is for. Carefully read through the next sections.
 
-- #### **Display the current DSC Time**
+- ### **Display the current DSC Time**
 Depending on the frame you're on, the main panel will display the current DSC time. This conversion is done, depending on the frame rate selected for the scene.
 
 <!-- GIF -->
 
-- #### **Export the current DSC Time**
+- ### **Export the current DSC Time**
 The second subpanel has 2 buttons. Click on the `Copy Current DSC Time` button to copy the current frame DSC time.
 
 <!-- GIF -->
 
 You'll notice the output is not quite what you expected. It comes with a lot of DSC commands, but the time is there. If don't feel like having all these commands when copying the time, you need to change the source code. More info [here](#👨🏻‍💻-changing-source-code)
 
-- #### **Export all timeline markers DSC Time**
+- ### **Export all timeline markers DSC Time**
 Need to export several frames? Using timeline markers, you can select multiple frames. Then, click on `Copy All Markers DSC Time` button to export them all, sorted by ascending order of time.
 
 <!-- GIF -->
