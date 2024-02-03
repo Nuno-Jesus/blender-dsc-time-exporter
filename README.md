@@ -29,6 +29,11 @@ Need to export several frames? Using timeline markers, you can select multiple f
 
 <!-- GIF -->
 
+- ### **Append extra lines to the output**
+If you are in dire need of appending further lines to each marker, you can explore the `Extra Text` subpanel. From there, you can add as many lines as you need. You can also remove some or all lines if not needed anymore.
+
+<!-- GIF -->
+
 ## 👨🏻‍💻 **Changing Source Code**
 If you're not feeling comfortable with the add-on output, you can change it and it's not that hard! On the `dsc_time_exporter_main.py`, look for this function:
 
