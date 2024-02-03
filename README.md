@@ -30,7 +30,7 @@ The second subpanel has 2 buttons. Click on the `Copy Current DSC Time` button t
 You'll notice the video above shows a lot more on the clipboard than just the timestamp. The default output is something like this:
 
 ```py
-TIME(...) 			# This is where the DSC timestamp will be placed
+TIME(...) 		# This is where the DSC timestamp will be placed
 CHANGE_FIELD(...)	# This is a counter ranging from 1 to n (default value is 1)
 MOVIE_DISP(1)
 MOVIE_PLAY(1)
@@ -68,7 +68,7 @@ def stringify_marker(dsc_time: int, i: int=1):
 The `dsc_time` parameter is what you're looking for. Supposing you only want this, the new code should look like this:
 
 ```py
-def stringify_marker(dsc_time, i=1):
+def stringify_marker(dsc_time: int, i: int=1):
 	return f'{dsc_time}\n'
 ```
 
