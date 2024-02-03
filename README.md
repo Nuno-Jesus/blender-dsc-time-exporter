@@ -74,6 +74,8 @@ def stringify_marker(dsc_time, i=1):
 
 Please, **keep the** `\n` **so line breaks are applied**!
 
-## 📚 **Resources**
+## 🔁 **Further Updates**
+I don't have any planed updates. However, if you feel like something could be changed, don't hesitate to create an issue! Feel free to also create a Pull Request in case you have an update yourself!
 
+## 📚 **Resources**
 - [Blender API](https://docs.blender.org/api/current/index.html)
