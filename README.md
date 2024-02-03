@@ -16,15 +16,14 @@ The current section will explain what the add-on is for. Carefully read through 
 Depending on the frame you're on, the main panel will display the current DSC time. This conversion is done, depending on the frame rate selected for the scene.
 
 <div align=center>
-	<video src="videos/dsc_time_demo.mp4" width=100%>
+	<img src="gifs/dsc_time_demo.gif">
 </div>
 
 - ### **Export the current DSC Time**
 The second subpanel has 2 buttons. Click on the `Copy Current DSC Time` button to copy the current frame DSC time.
 
 <div align=center>
-	<video width=100% controls>
-	<source src="videos/copy_current_dsc_time.mp4" type="video/mp4">
+	<img src="gifs/copy_current_dsc_time.gif">
 </div>
 
 You'll notice the output is not quite what you expected. It comes with a lot of DSC commands, but the time is there. If don't feel like having all these commands when copying the time, you need to change the source code. More info [here](#👨🏻‍💻-changing-source-code)
@@ -33,14 +32,14 @@ You'll notice the output is not quite what you expected. It comes with a lot of 
 Need to export several frames? Using timeline markers, you can select multiple frames. Then, click on `Copy All Markers DSC Time` button to export them all, sorted by ascending order of time.
 
 <div align=center>
-	<video src="videos/copy_all_markers_demo.mp4" width=100%>
+	<img src="gifs/convert_all_markers.gif">
 </div>
 
 - ### **Append extra lines to the output**
 If you are in dire need of appending further lines to each marker, you can explore the `Extra Text` subpanel. From there, you can add as many lines as you need. You can also remove some or all lines if not needed anymore.
 
 <div align=center>
-	<video src="videos/extra_lines_demo.mp4" width=100%>
+	<img src="gifs/extra_lines_demo.gif" >
 </div>
 
 ## 👨🏻‍💻 **Changing Source Code**
