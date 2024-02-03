@@ -16,20 +16,20 @@ from bpy.types import Operator, PropertyGroup, Panel
 
 ########################################### UTILS ###########################################
 
-def frame_to_dsctime(frame, fps=60):
+def frame_to_dsctime(frame: int, fps: float=60) -> int:
 	seconds = frame / fps
 	time = seconds * 100000
 	return int(time)
 
 #! YOU CAN CHANGE THE DEFAULT TEXT HERE
-def stringify_marker(dsc_time, i=1):
+def stringify_marker(dsc_time: int, i: int=1):
 	return f'TIME({dsc_time});\n' + \
 		f'CHANGE_FIELD({i});\n' + \
 		'MOVIE_DISP(1);\n' + \
 		'MOVIE_PLAY(1);\n' + \
 		'DATA_CAMERA(0, 1);\n'
 
-def calculate(scene):
+def calculate(scene: bpy.types.Scene):
 	fps = scene.render.fps / scene.render.fps_base
 	dsc_current = frame_to_dsctime(scene.frame_current, fps=fps)
 

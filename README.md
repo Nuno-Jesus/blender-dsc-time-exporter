@@ -57,7 +57,7 @@ If you are in dire need of extra output, you can explore the `Extra Text` subpan
 If you're not feeling comfortable with the add-on output, you can change it and it's not that hard! On the `dsc_time_exporter_main.py`, look for this function:
 
 ```py
-def stringify_marker(dsc_time, i=1):
+def stringify_marker(dsc_time: int, i: int=1):
 	return f'TIME({dsc_time});\n' + \
 		f'CHANGE_FIELD({i});\n' + \
 		'MOVIE_DISP(1);\n' + \
@@ -72,7 +72,7 @@ def stringify_marker(dsc_time, i=1):
 	return f'{dsc_time}\n'
 ```
 
-Please, **keep the `\n` so line breaks are applied**!
+Please, **keep the** `\n` **so line breaks are applied**!
 
 ## 📚 **Resources**
 
