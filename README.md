@@ -1,7 +1,8 @@
 # **DSC Time Exporter**
 A Blender 4.0.2 add-on. Provides the ability to convert the Blender frames to [Project Diva](https://store.steampowered.com/app/1761390/Hatsune_Miku_Project_DIVA_Mega_Mix/) timestamps.
 
-<!-- ## 📝 **Authorship** -->
+## 📝 **Authorship**
+Although the code is of my authorship, I need to thank [ThisIsHH](https://github.com/ThisIsHH) for exploring this sort of tool earlier. From what he achieved, I was able to re-work it and build on top of that.
 
 ## 📒 **About**
 This repo houses a Blender add-on designed to help a friend of mine. The add-on automatically calculates the Project Diva time on a given frame. This time is used in some files to coordinate in-game animations, switch stages, add 2D/3D effects, etc. You can then export that time depending 
