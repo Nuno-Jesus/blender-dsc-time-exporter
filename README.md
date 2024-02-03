@@ -37,7 +37,7 @@ MOVIE_PLAY(1)
 DATA_CAMERA(0, 1)
 ```
 
-If don't feel like having all these commands, you might want to change the source code. More info [here](#👨🏻‍💻-changing-source-code).
+If you don't feel like having all these commands, you might want to change the source code. More info [here](#👨🏻‍💻-changing-source-code).
 
 - ### **Export all timeline markers DSC Time**
 Need to export several frames? Using timeline markers, you can mark multiple frames. Then, click on `Copy All Markers DSC Time` button to convert and export them all.
