@@ -23,7 +23,8 @@ Depending on the frame you're on, the main panel will display the current DSC ti
 The second subpanel has 2 buttons. Click on the `Copy Current DSC Time` button to copy the current frame DSC time.
 
 <div align=center>
-	<video src="videos/copy_current_dsc_time.mp4" width=100%>
+	<video width=100% controls>
+	<source src="videos/copy_current_dsc_time.mp4" type="video/mp4">
 </div>
 
 You'll notice the output is not quite what you expected. It comes with a lot of DSC commands, but the time is there. If don't feel like having all these commands when copying the time, you need to change the source code. More info [here](#👨🏻‍💻-changing-source-code)
